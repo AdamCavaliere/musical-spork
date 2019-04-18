@@ -17,10 +17,8 @@ job "nginx" {
           https = 443
         }
         volumes = [
-          "conf/default.conf:/etc/nginx/conf.d/default.conf",
-          "secret/vault_kv.crt:/etc/nginx/ssl/vault_kv.crt",
-          "secret/vault_kv.key:/etc/nginx/ssl/vault_kv.key",
-          "secret/vault_pki.key:/etc/nginx/ssl/vault_pki.key",
+          "conf.d:/etc/nginx/conf.d",
+          "ssl:/etc/nginx/ssl",
         ]
       }
 
@@ -87,7 +85,7 @@ server {
   {{ end }}
 }
         EOH
-        destination = "conf/default.conf"
+        destination = "conf.d/default.conf"
       }
 
       template {
@@ -99,7 +97,7 @@ server {
 {{ end }}
       EOH
 
-        destination = "secret/vault_kv.crt"
+        destination = "ssl/vault_kv.crt"
       }
 
       template {
@@ -111,7 +109,7 @@ server {
 {{ end }}
       EOH
 
-        destination = "secret/vault_kv.key"
+        destination = "ssl/vault_kv.key"
       }
 
       template {
@@ -124,7 +122,7 @@ server {
 {{ end }}
       EOH
 
-        destination = "secret/vault_pki.key"
+        destination = "ssl/vault_pki.key"
       }
 
       resources {
