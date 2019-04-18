@@ -416,7 +416,8 @@ vault policy write transit-app-example transit-app-example.policy
 vault secrets enable pki
 
 vault write pki/root/generate/internal \
-    common_name=service.consul
+    common_name="Vault CA" \
+    organization="HashiCorp"
 
 vault write pki/roles/consul-service \
     generate_lease=true \
@@ -436,7 +437,8 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout vault-nginx.key -out
 
 vault kv put kv/nginx-pki pub=@vault-nginx.crt prv=@vault-nginx.key
 
-consul kv put demo/vault_pki false
+consul kv put demo/vault_pki_enable false
+consul kv put demo/vault_pki_ttl 30m
 
 cat > policy-kv-nginx.hcl << EOF
 path "kv/nginx-pki" {

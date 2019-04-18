@@ -53,7 +53,7 @@ server {
   listen 443 ssl default_server;
   listen [::]:443 ssl;
 
-  {{ if key "demo/vault_pki" | parseBool }}
+  {{ if key "demo/vault_pki_enable" | parseBool }}
   ssl_certificate /etc/nginx/ssl/vault_pki.key;
   ssl_certificate_key /etc/nginx/ssl/vault_pki.key;
   {{ else }}
@@ -116,8 +116,10 @@ server {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data = <<EOH
-{{ with secret "pki/issue/consul-service" "common_name=nginx.service.consul" "ttl=30m" }}
+{{ $ttl := key "demo/vault_pki_ttl" }}
+{{ with secret "pki/issue/consul-service" "common_name=nginx.service.consul" (printf "ttl=%s" $ttl) }}
 {{ .Data.certificate }}
+{{ .Data.issuing_ca }}
 {{ .Data.private_key }}
 {{ end }}
       EOH
